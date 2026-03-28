@@ -16,7 +16,7 @@
     {
       "name": "modern-unix-tools",
       "description": "用现代 Unix 工具替代传统命令：fd 替代 find，rg 替代 grep",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "source": "./plugins/modern-unix-tools"
     }
   ]
