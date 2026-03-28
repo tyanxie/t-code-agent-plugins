@@ -4,8 +4,9 @@
 
 t-code-agent-plugins — CodeBuddy Code 插件集，仓库地址 https://github.com/tyanxie/t-code-agent-plugins 。
 
-当前包含一个插件：
+当前包含以下插件：
 - **codebuddy-hud**：CodeBuddy Code 实时状态栏 HUD
+- **modern-unix-tools**：用 fd 替代 find、rg 替代 grep 的现代 Unix 工具插件
 
 ## 目录结构
 
@@ -43,6 +44,18 @@ t-code-agent-plugins/
         ├── package.json
         ├── tsconfig.json
         └── pnpm-lock.yaml
+    └── modern-unix-tools/
+        ├── .codebuddy-plugin/
+        │   └── plugin.json
+        ├── skills/
+        │   ├── fd/
+        │   │   └── SKILL.md
+        │   └── ripgrep/
+        │       └── SKILL.md
+        ├── hooks/
+        │   └── hooks.json
+        └── scripts/
+            └── guard.py
 ```
 
 ## 版本号规则
