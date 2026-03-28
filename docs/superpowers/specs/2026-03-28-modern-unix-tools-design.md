@@ -59,10 +59,17 @@ plugins/modern-unix-tools/
 
 ### 2. skills/fd/SKILL.md
 
-**frontmatter**：
+**frontmatter 示例**：
 
-- `name: fd`
-- `description`：触发词覆盖"查找文件"、"find files"、"fd"、"文件搜索"等场景
+```yaml
+---
+name: fd
+description: >
+  当需要查找文件时使用此 skill，替代 find 命令。
+  适用场景：查找文件、find files、文件搜索、fd、
+  按文件名/扩展名/类型查找、列出目录下特定文件等。
+---
+```
 
 **内容结构**：
 
@@ -74,10 +81,17 @@ plugins/modern-unix-tools/
 
 ### 3. skills/ripgrep/SKILL.md
 
-**frontmatter**：
+**frontmatter 示例**：
 
-- `name: ripgrep`
-- `description`：触发词覆盖"搜索内容"、"search text"、"rg"、"grep"等场景
+```yaml
+---
+name: ripgrep
+description: >
+  当需要在文件内容中搜索文本时使用此 skill，替代 grep 命令。
+  适用场景：搜索内容、search text、rg、grep、
+  在代码库中查找字符串/正则表达式、查找函数定义等。
+---
+```
 
 **内容结构**：
 
@@ -89,9 +103,10 @@ plugins/modern-unix-tools/
 
 ### 4. hooks/hooks.json
 
+注：`description` 为顶层说明字段，不属于标准 hooks 规范字段，实现时若报错可直接删除。
+
 ```json
 {
-  "description": "拦截 find/grep 命令，引导使用 fd/rg 替代",
   "hooks": {
     "PreToolUse": [
       {
@@ -139,8 +154,10 @@ plugins/modern-unix-tools/
 
 **关键实现细节**：
 
-- 使用 `re.search(r'\bfind\b', command)` 匹配单词边界，避免误匹配 `grepdb`、`finder` 等
-- 使用 `shutil.which()` 检测命令是否可用，纯标准库无额外依赖
+- `find` 匹配：`re.search(r'\bfind\b', command)`，单词边界避免误匹配 `finder` 等
+- `grep` 匹配：`re.search(r'\b(e|f|z)?grep\b', command)`，覆盖 `grep`/`egrep`/`fgrep`/`zgrep`
+- fd 安装检测：`shutil.which('fd') or shutil.which('fdfind')`，兼容 Ubuntu/Debian 上的包名 `fdfind`
+- 使用纯标准库（`sys`、`json`、`re`、`shutil`），无额外依赖
 - 解析异常时静默放行（不影响正常工作流）
 
 ---
@@ -161,7 +178,10 @@ plugins/modern-unix-tools/
 | 场景 | 处理方式 |
 |------|----------|
 | `find`/`grep` 出现在字符串内（如 `echo "find me"`） | 第一期接受一定误判，不做 AST 级解析 |
+| `finder`、`grepdb` 等含目标词的其他命令 | 单词边界匹配（`\b`）避免误匹配 |
+| `egrep`、`fgrep`、`zgrep` | 正则 `\b(e|f|z)?grep\b` 统一覆盖，均拦截为使用 rg |
 | 命令链（如 `ls && grep foo`） | 正常检测，能命中 |
+| fd 安装包名为 `fdfind`（Ubuntu/Debian） | 检测逻辑同时尝试 `fd` 和 `fdfind` |
 | fd/rg 均未安装 | hook 对两者均放行，不影响用户 |
 | python3 不可用 | hook 执行失败，CodeBuddy 默认放行（不影响正常工作流） |
 | 同一命令同时含 find 和 grep | 先命中 find 即阻止，提示加载 fd skill |
