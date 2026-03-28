@@ -12,12 +12,6 @@
       "description": "CodeBuddy Code 实时状态栏 HUD，展示模型、项目、Git、成本、工具活动等信息",
       "version": "0.0.9",
       "source": "./plugins/codebuddy-hud"
-    },
-    {
-      "name": "modern-unix-tools",
-      "description": "用现代 Unix 工具替代传统命令：fd 替代 find，rg 替代 grep",
-      "version": "0.1.1",
-      "source": "./plugins/modern-unix-tools"
     }
   ]
 }
