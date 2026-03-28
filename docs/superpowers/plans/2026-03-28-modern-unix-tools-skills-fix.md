@@ -49,10 +49,10 @@
   ```
   改为：
   ```bash
-  # ❌ 不推荐：通过 fd + xargs 组合（涉及进程调用）
+  # 不推荐：通过 fd + xargs 组合（涉及进程调用）
   fd -e py | xargs rg "def main"
 
-  # ✅ 推荐：直接用 rg 的 -t 标志（更快）
+  # 推荐：直接用 rg 的 -t 标志（更快）
   rg -t py "def main"
   ```
 
