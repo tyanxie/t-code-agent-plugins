@@ -1,8 +1,8 @@
 ---
 name: fd
 description: >
-  当需要查找文件时使用此 skill，替代 find 命令。
-  适用场景：查找文件、find files、文件搜索、fd、
+  当需要按文件名、扩展名或类型查找文件时使用此 skill。
+  触发场景：find files、查找文件、文件搜索、fd、
   按文件名/扩展名/类型查找、列出目录下特定文件等。
 ---
 
@@ -80,10 +80,10 @@ fd --changed-before 30d  # 30 天前修改的文件
 ### 与 rg 组合
 
 ```bash
-# 在所有 Python 文件中搜索特定内容
+# 不推荐：通过 fd + xargs 组合（涉及进程调用）
 fd -e py | xargs rg "def main"
 
-# 更高效的写法（直接用 rg 的 -t 标志）
+# 推荐：直接用 rg 的 -t 标志（更快）
 rg -t py "def main"
 ```
 
