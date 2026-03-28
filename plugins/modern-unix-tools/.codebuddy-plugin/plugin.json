@@ -1,0 +1,12 @@
+{
+  "name": "modern-unix-tools",
+  "version": "0.1.0",
+  "description": "用现代 Unix 工具替代传统命令：fd 替代 find，rg 替代 grep",
+  "author": {
+    "name": "tyanxie",
+    "url": "https://github.com/tyanxie"
+  },
+  "repository": "https://github.com/tyanxie/t-code-agent-plugins",
+  "keywords": ["fd", "ripgrep", "find", "grep", "modern-unix", "productivity"],
+  "category": "工具"
+}
