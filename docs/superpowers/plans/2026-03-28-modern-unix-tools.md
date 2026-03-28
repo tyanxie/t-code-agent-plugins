@@ -165,20 +165,6 @@ fd --changed-within 1d   # 最近 1 天内修改的文件
 fd --changed-before 30d  # 30 天前修改的文件
 ```
 
-### 对结果执行命令
-
-```bash
-fd -e py -x wc -l {}     # 统计每个 .py 文件的行数
-fd -e jpg -x convert {} {.}.png   # 批量转换图片格式
-fd -t f -e log -x rm {}  # 删除所有 .log 文件
-```
-
-占位符说明：
-- `{}` — 完整路径
-- `{.}` — 去掉扩展名的路径
-- `{/}` — 仅文件名
-- `{//}` — 仅目录部分
-
 ### 与 rg 组合
 
 ```bash
