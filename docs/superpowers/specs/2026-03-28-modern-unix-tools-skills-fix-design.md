@@ -2,7 +2,7 @@
 
 **日期**：2026-03-28  
 **版本**：0.1.1（patch 版本，仅修复 skill 文档质量问题）  
-**状态**：第二轮审查修正版  
+**状态**：第三轮审查修正版  
 **关联原始 spec**：[2026-03-28-modern-unix-tools-design.md](./2026-03-28-modern-unix-tools-design.md)
 
 ---
@@ -20,14 +20,14 @@
 | # | 问题描述 | 严重程度 |
 |---|---------|---------|
 | F1 | description 包含 "替代 find 命令" 等功能描述，违反 CSO 规范（应仅描述触发条件） | 高 |
-| F2 | 组合示例列出低效写法再紧跟高效写法否定，冗余且误导 | 低 |
+| F2 | 组合示例低效写法标记不清晰，与高效写法对比可能造成困惑 | 低 |
 
 ### ripgrep/SKILL.md
 
 | # | 问题描述 | 严重程度 |
 |---|---------|---------|
 | R1 | description 包含 "替代 grep 命令" 等功能描述，违反 CSO 规范 | 高 |
-| R2 | `-n` 行的注释 "（默认已显示）" 与列出该命令的行为自相矛盾 | 中 |
+| R2 | `-n` 行的注释 "（默认已显示）" 不准确，需改写为 `# 显示行号` | 中 |
 | R3 | 性能建议章节 4 条均为常识性内容，token 消耗不合理，可精简 | 低 |
 
 ---
@@ -45,7 +45,7 @@
 
 **fd 修复前后对比**：
 
-**修复前**（当前状态，第 3-6 行）：
+**修复前**（`plugins/modern-unix-tools/skills/fd/SKILL.md` 第 3-6 行）：
 ```yaml
 description: >
   当需要查找文件时使用此 skill，替代 find 命令。
@@ -63,7 +63,7 @@ description: >
 
 **ripgrep 修复前后对比**：
 
-**修复前**（当前状态，第 3-6 行）：
+**修复前**（`plugins/modern-unix-tools/skills/ripgrep/SKILL.md` 第 3-6 行）：
 ```yaml
 description: >
   当需要在文件内容中搜索文本时使用此 skill，替代 grep 命令。
@@ -81,46 +81,59 @@ description: >
 
 ---
 
-### F2：精简 fd 组合示例
+### F2：澄清 fd 组合示例
 
-**修复前**（当前状态，第 80-88 行）：
+**修复前**（`plugins/modern-unix-tools/skills/fd/SKILL.md` 第 80-88 行）：
 ```bash
 ### 与 rg 组合
 
-fd -e py | xargs rg "def main"          # 低效写法
+```bash
+# 在所有 Python 文件中搜索特定内容
+fd -e py | xargs rg "def main"
 
 # 更高效的写法（直接用 rg 的 -t 标志）
 rg -t py "def main"
 ```
+```
 
-问题：列出低效写法后立即否定，容易误导用户。
+**问题**：两条命令都没有标注孰优孰劣，读者需要对比代码本身才能看出"更高效的写法"。
 
-**修复后**：
+**修复后**（清晰标注）：
 ```bash
 ### 与 rg 组合
 
-# 在所有 Python 文件中搜索特定内容
+```bash
+# ❌ 不推荐：通过 fd + xargs 组合（涉及进程调用）
+fd -e py | xargs rg "def main"
+
+# ✅ 推荐：直接用 rg 的 -t 标志（更快）
 rg -t py "def main"
 ```
+```
+
+此修复通过 emoji 标注使对比更清晰，新手能快速识别推荐做法。
 
 ---
 
-### R2：删除 `-n` 冗余行
+### R2：改写 `-n` 行注释
 
-**修复前**（当前状态，第 50 行）：
+**修复前**（`plugins/modern-unix-tools/skills/ripgrep/SKILL.md` 第 50 行）：
 ```bash
 rg -n "pattern"          # 显示行号（默认已显示）
 ```
 
-**问题说明**：在 ripgrep 中，`-n` flag 用于显示行号，但行号已是默认行为。加上 `-n` flag 只是显式重申默认行为，无新增功能价值。注释本身已揭示其冗余性。
+**问题**：注释"（默认已显示）"容易误导读者认为此 flag 多余。实际上，当输出被重定向或管道传输时，`-n` flag 仍有实际意义。
 
-**修复后**：删除整行（包括注释）。
+**修复后**（删除误导注释）：
+```bash
+rg -n "pattern"          # 显示行号
+```
 
 ---
 
 ### R3：精简 ripgrep 性能建议
 
-**修复前**（当前状态，第 98-103 行）：
+**修复前**（`plugins/modern-unix-tools/skills/ripgrep/SKILL.md` 第 98-103 行）：
 ```markdown
 ## 性能建议
 
@@ -156,10 +169,10 @@ rg -n "pattern"          # 显示行号（默认已显示）
 ### 必须更新的文件
 
 1. **插件自身版本号** — `plugins/modern-unix-tools/.codebuddy-plugin/plugin.json`
-   - 文件第 3 行：`"version": "0.1.0"` → `"version": "0.1.1"`
+   - 修改内容：第 3 行 `"version": "0.1.0"` 改为 `"version": "0.1.1"`
 
 2. **Marketplace 版本号** — `.codebuddy-plugin/marketplace.json`
-   - modern-unix-tools 条目（第 19 行）：`"version": "0.1.0"` → `"version": "0.1.1"`
+   - 修改内容：第 19 行 modern-unix-tools 条目的 `"version": "0.1.0"` 改为 `"version": "0.1.1"`
 
 ### 验证其他位置
 
@@ -190,10 +203,12 @@ grep -r "0.1.0" --include="*.json" --include="*.md" .
 
 ## 实施检查清单
 
-- [ ] 更新 `plugins/modern-unix-tools/.codebuddy-plugin/plugin.json` version 字段
-- [ ] 更新 `.codebuddy-plugin/marketplace.json` version 字段
-- [ ] 修改 `plugins/modern-unix-tools/skills/fd/SKILL.md` — F1、F2 修复
-- [ ] 修改 `plugins/modern-unix-tools/skills/ripgrep/SKILL.md` — R1、R2、R3 修复
-- [ ] 执行 grep 验证：`grep -r "0.1.0" --include="*.json" --include="*.md" .`
-- [ ] 确保所有版本号更新已完成
-- [ ] 运行 pnpm install（如有依赖变更）
+- [ ] 更新 `plugins/modern-unix-tools/.codebuddy-plugin/plugin.json` 第 3 行：`"version": "0.1.0"` → `"version": "0.1.1"`
+- [ ] 更新 `.codebuddy-plugin/marketplace.json` 第 19 行：`"version": "0.1.0"` → `"version": "0.1.1"`
+- [ ] 修改 `plugins/modern-unix-tools/skills/fd/SKILL.md` 第 3-6 行：更新 description（F1 修复）
+- [ ] 修改 `plugins/modern-unix-tools/skills/fd/SKILL.md` 第 80-88 行：添加 emoji 标注（F2 修复）
+- [ ] 修改 `plugins/modern-unix-tools/skills/ripgrep/SKILL.md` 第 3-6 行：更新 description（R1 修复）
+- [ ] 修改 `plugins/modern-unix-tools/skills/ripgrep/SKILL.md` 第 50 行：改写注释为"显示行号"（R2 修复）
+- [ ] 修改 `plugins/modern-unix-tools/skills/ripgrep/SKILL.md` 第 98-103 行：精简为 2 条建议（R3 修复）
+- [ ] 执行 `grep -r "0.1.0" --include="*.json" --include="*.md" .` 验证版本号更新
+- [ ] 提交所有修改：`git add -A && git commit -m "fix: resolve skills CSO violations and improve clarity"`
