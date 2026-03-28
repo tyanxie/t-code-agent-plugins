@@ -1,0 +1,8 @@
+.codebuddy/
+node_modules/
+dist/
+!plugins/codebuddy-hud/dist/
+plugins/codebuddy-hud/tests/*.js
+plugins/codebuddy-hud/tests/*.js.map
+plugins/codebuddy-hud/tests/*.d.ts
+plugins/codebuddy-hud/tsconfig.test.json

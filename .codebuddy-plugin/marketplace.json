@@ -1,0 +1,17 @@
+{
+  "name": "t-code-agent-plugins",
+  "description": "CodeBuddy Code 插件集",
+  "version": "0.0.1",
+  "owner": {
+    "name": "tyanxie",
+    "url": "https://github.com/tyanxie"
+  },
+  "plugins": [
+    {
+      "name": "codebuddy-hud",
+      "description": "CodeBuddy Code 实时状态栏 HUD，展示模型、项目、Git、成本、工具活动等信息",
+      "version": "0.0.9",
+      "source": "./plugins/codebuddy-hud"
+    }
+  ]
+}

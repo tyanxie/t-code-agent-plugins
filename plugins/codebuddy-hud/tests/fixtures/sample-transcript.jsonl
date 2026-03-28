@@ -1,0 +1,19 @@
+{"timestamp":"2025-03-26T10:00:00Z","message":{"content":[{"type":"tool_use","id":"tool_01","name":"Read","input":{"file_path":"/src/index.ts"}}]}}
+{"timestamp":"2025-03-26T10:00:01Z","message":{"content":[{"type":"tool_result","tool_use_id":"tool_01"}]}}
+{"timestamp":"2025-03-26T10:00:02Z","message":{"content":[{"type":"tool_use","id":"tool_02","name":"Bash","input":{"command":"npm test"}}]}}
+{"timestamp":"2025-03-26T10:00:05Z","message":{"content":[{"type":"tool_result","tool_use_id":"tool_02","is_error":true}]}}
+{"timestamp":"2025-03-26T10:00:06Z","message":{"content":[{"type":"tool_use","id":"tool_03","name":"Edit","input":{"file_path":"/src/utils.ts"}}]}}
+{"timestamp":"2025-03-26T10:00:10Z","message":{"content":[{"type":"tool_result","tool_use_id":"tool_03"}]}}
+{"timestamp":"2025-03-26T10:00:11Z","message":{"content":[{"type":"tool_use","id":"agent_01","name":"Task","input":{"subagent_type":"Explore","description":"Search for error handling patterns"}}]}}
+{"timestamp":"2025-03-26T10:00:20Z","message":{"content":[{"type":"tool_result","tool_use_id":"agent_01"}]}}
+{"timestamp":"2025-03-26T10:00:21Z","message":{"content":[{"type":"tool_use","id":"agent_02","name":"Task","input":{"subagent_type":"Code","model":"claude-sonnet","description":"Implement feature X"}}]}}
+{"timestamp":"2025-03-26T10:00:22Z","message":{"content":[{"type":"tool_use","id":"task_create_01","name":"TaskCreate","input":{"subject":"Fix bug in parser","description":"Parser fails on empty input","taskId":"1"}}]}}
+{"timestamp":"2025-03-26T10:00:22Z","message":{"content":[{"type":"tool_result","tool_use_id":"task_create_01"}]}}
+{"timestamp":"2025-03-26T10:00:23Z","message":{"content":[{"type":"tool_use","id":"task_create_02","name":"TaskCreate","input":{"subject":"Add unit tests","taskId":"2"}}]}}
+{"timestamp":"2025-03-26T10:00:23Z","message":{"content":[{"type":"tool_result","tool_use_id":"task_create_02"}]}}
+{"timestamp":"2025-03-26T10:00:24Z","message":{"content":[{"type":"tool_use","id":"task_update_01","name":"TaskUpdate","input":{"taskId":"1","status":"in_progress"}}]}}
+{"timestamp":"2025-03-26T10:00:24Z","message":{"content":[{"type":"tool_result","tool_use_id":"task_update_01"}]}}
+{"timestamp":"2025-03-26T10:00:25Z","message":{"content":[{"type":"tool_use","id":"task_update_02","name":"TaskUpdate","input":{"taskId":"1","status":"completed"}}]}}
+{"timestamp":"2025-03-26T10:00:25Z","message":{"content":[{"type":"tool_result","tool_use_id":"task_update_02"}]}}
+{"timestamp":"2025-03-26T10:00:30Z","message":{"content":[{"type":"tool_result","tool_use_id":"agent_02"}]}}
+{"timestamp":"2025-03-26T10:00:31Z","message":{"content":[{"type":"tool_use","id":"tool_04","name":"Bash","input":{"command":"npm run build"}}]}}

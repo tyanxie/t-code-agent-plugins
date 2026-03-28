@@ -1,0 +1,12 @@
+{
+  "name": "codebuddy-hud",
+  "version": "0.0.9",
+  "description": "CodeBuddy Code 实时状态栏 HUD，展示模型、项目、Git、成本、工具活动等信息",
+  "author": {
+    "name": "tyanxie",
+    "url": "https://github.com/tyanxie"
+  },
+  "repository": "https://github.com/tyanxie/t-code-agent-plugins",
+  "keywords": ["hud", "statusline", "monitoring", "cost", "tools", "agents"],
+  "category": "监控"
+}
