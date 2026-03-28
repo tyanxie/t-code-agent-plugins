@@ -58,6 +58,21 @@ t-code-agent-plugins/
             └── guard.py
 ```
 
+## Git 提交规范
+
+**格式：Angular 风格英文前缀 + 中文描述**
+
+- 前缀（英文）：`feat:`、`fix:`、`docs:`、`chore:`、`refactor:`、`style:`、`test:` 等
+- 描述（中文）：前缀后接中文内容
+
+示例：
+```
+fix: 解决 skill description 违反 CSO 规范的问题
+docs: 精准化 plan 中的行号范围表述
+feat: 为 modern-unix-tools 添加 ripgrep skill
+chore: modern-unix-tools 升版至 0.1.1
+```
+
 ## 版本号规则
 
 **所有插件**在每次修改后必须更新版本号，遵循 [semver](https://semver.org/) 规范：
