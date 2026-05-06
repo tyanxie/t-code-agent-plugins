@@ -56,4 +56,10 @@ export function getContextWindow(stdin) {
 export function getVersion(stdin) {
     return stdin.version ?? null;
 }
+export function getSessionId(stdin, length = 8) {
+    const id = stdin.session_id ?? null;
+    if (!id)
+        return null;
+    return id.slice(0, length);
+}
 //# sourceMappingURL=stdin.js.map

@@ -2,8 +2,8 @@ import { renderIdentityLine } from './identity.js';
 import { renderStatsLine, renderContextBar } from './stats.js';
 import { renderActivityLine } from './activity.js';
 import { getTerminalWidth, wrapLineToWidth } from './width.js';
-import { getModelName, getProjectPath } from '../stdin.js';
-import { colorize } from './colors.js';
+import { getModelName, getProjectPath, getSessionId } from '../stdin.js';
+import { colorize, dim } from './colors.js';
 const RESET = '\x1b[0m';
 function renderExpanded(ctx) {
     const lines = [];
@@ -46,6 +46,12 @@ function renderCompact(ctx) {
         const ver = stdin.version;
         if (ver)
             parts.push(`v${ver}`);
+    }
+    // Session ID
+    if (display.sessionId) {
+        const sid = getSessionId(stdin);
+        if (sid)
+            parts.push(dim(`#${sid}`));
     }
     // Stats (without context, since it's already shown above)
     const stats = renderStatsLine(ctx, { includeContext: false });

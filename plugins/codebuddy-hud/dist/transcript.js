@@ -126,6 +126,7 @@ export async function parseTranscript(transcriptPath) {
     const tasks = [];
     const taskIdToIndex = new Map();
     let sessionStart;
+    let sessionName;
     let parsedCleanly = false;
     try {
         const rl = readline.createInterface({
@@ -140,6 +141,86 @@ export async function parseTranscript(transcriptPath) {
                 const timestamp = entry.timestamp ? new Date(entry.timestamp) : new Date();
                 if (!sessionStart && entry.timestamp) {
                     sessionStart = timestamp;
+                }
+                // 提取 /rename 或 AI 自动生成的会话名称（取最新的）
+                if (entry.type === 'ai-title' && typeof entry.aiTitle === 'string' && entry.aiTitle) {
+                    sessionName = entry.aiTitle;
+                }
+                if (entry.type === 'custom-title' && typeof entry.customTitle === 'string' && entry.customTitle) {
+                    sessionName = entry.customTitle;
+                }
+                // CodeBuddy Code format: top-level function_call / function_call_result entries
+                if (entry.type === 'function_call' && entry.callId && entry.name) {
+                    const input = entry.arguments ? (() => { try { return JSON.parse(entry.arguments); } catch { return undefined; } })() : undefined;
+                    if (entry.name === 'Task') {
+                        agentMap.set(entry.callId, {
+                            id: entry.callId,
+                            type: input?.subagent_type ?? 'unknown',
+                            model: input?.model ?? undefined,
+                            description: input?.description ?? undefined,
+                            status: 'running',
+                            startTime: timestamp,
+                        });
+                    }
+                    else if (entry.name === 'TaskCreate') {
+                        const subject = typeof input?.subject === 'string' ? input.subject : '';
+                        const description = typeof input?.description === 'string' ? input.description : '';
+                        const taskContent = subject || description || 'Untitled task';
+                        const status = normalizeTaskStatus(input?.status) ?? 'pending';
+                        tasks.push({ content: taskContent, status });
+                        const taskId = typeof input?.taskId === 'string' || typeof input?.taskId === 'number'
+                            ? String(input.taskId)
+                            : entry.callId;
+                        if (taskId) {
+                            taskIdToIndex.set(taskId, tasks.length - 1);
+                        }
+                    }
+                    else if (entry.name === 'TaskUpdate') {
+                        const taskId = typeof input?.taskId === 'string' || typeof input?.taskId === 'number'
+                            ? String(input.taskId)
+                            : undefined;
+                        if (taskId) {
+                            let index = taskIdToIndex.get(taskId);
+                            if (index === undefined && /^\d+$/.test(taskId)) {
+                                const numIdx = parseInt(taskId, 10) - 1;
+                                if (numIdx >= 0 && numIdx < tasks.length)
+                                    index = numIdx;
+                            }
+                            if (index !== undefined) {
+                                const newStatus = normalizeTaskStatus(input?.status);
+                                if (newStatus)
+                                    tasks[index].status = newStatus;
+                                const newSubject = typeof input?.subject === 'string' ? input.subject : '';
+                                const newDesc = typeof input?.description === 'string' ? input.description : '';
+                                const newContent = newSubject || newDesc;
+                                if (newContent)
+                                    tasks[index].content = newContent;
+                            }
+                        }
+                    }
+                    else {
+                        toolMap.set(entry.callId, {
+                            id: entry.callId,
+                            name: entry.name,
+                            target: extractTarget(entry.name, input),
+                            status: 'running',
+                            startTime: timestamp,
+                        });
+                    }
+                    continue;
+                }
+                if (entry.type === 'function_call_result' && entry.callId) {
+                    const tool = toolMap.get(entry.callId);
+                    if (tool) {
+                        tool.status = entry.isError ? 'error' : 'completed';
+                        tool.endTime = timestamp;
+                    }
+                    const agent = agentMap.get(entry.callId);
+                    if (agent) {
+                        agent.status = 'completed';
+                        agent.endTime = timestamp;
+                    }
+                    continue;
                 }
                 const content = entry.message?.content;
                 if (!content || !Array.isArray(content))
@@ -233,6 +314,7 @@ export async function parseTranscript(transcriptPath) {
         agents: Array.from(agentMap.values()).slice(-10),
         tasks,
         sessionStart,
+        sessionName,
     };
     if (parsedCleanly) {
         writeCache(transcriptPath, fileState, result);
