@@ -17,6 +17,7 @@ export const DEFAULT_CONFIG = {
         tasks: false,
         contextUsage: true,
         contextValues: false,
+        sessionId: false,
     },
     colors: {
         model: 'blue',

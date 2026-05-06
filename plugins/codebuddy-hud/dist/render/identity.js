@@ -1,7 +1,7 @@
-import { getModelName, getProjectPath, getVersion } from '../stdin.js';
-import { colorize } from './colors.js';
+import { getModelName, getProjectPath, getVersion, getSessionId } from '../stdin.js';
+import { colorize, dim } from './colors.js';
 export function renderIdentityLine(ctx) {
-    const { config, stdin, gitStatus } = ctx;
+    const { config, stdin, gitStatus, transcript } = ctx;
     const { display, colors } = config;
     const parts = [];
     if (display.model) {
@@ -21,6 +21,18 @@ export function renderIdentityLine(ctx) {
         const ver = getVersion(stdin);
         if (ver) {
             parts.push(`v${ver}`);
+        }
+    }
+    if (display.sessionId) {
+        const sessionName = transcript?.sessionName;
+        if (sessionName) {
+            parts.push(colorize(sessionName, 'brightCyan'));
+        }
+        else {
+            const sid = getSessionId(stdin);
+            if (sid) {
+                parts.push(dim(`#${sid}`));
+            }
         }
     }
     if (parts.length === 0)

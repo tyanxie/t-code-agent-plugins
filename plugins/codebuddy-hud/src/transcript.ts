@@ -6,7 +6,10 @@ import * as os from 'node:os';
 import type { TranscriptData, ToolEntry, AgentEntry, TaskItem } from './types.js';
 
 interface TranscriptLine {
+  type?: string;
   timestamp?: string;
+  aiTitle?: string;
+  customTitle?: string;
   message?: {
     content?: ContentBlock[];
   };
@@ -175,6 +178,7 @@ export async function parseTranscript(transcriptPath: string): Promise<Transcrip
   const tasks: TaskItem[] = [];
   const taskIdToIndex = new Map<string, number>();
   let sessionStart: Date | undefined;
+  let sessionName: string | undefined;
   let parsedCleanly = false;
 
   try {
@@ -191,6 +195,14 @@ export async function parseTranscript(transcriptPath: string): Promise<Transcrip
 
         if (!sessionStart && entry.timestamp) {
           sessionStart = timestamp;
+        }
+
+        // 提取 /rename 或 AI 自动生成的会话名称（取最新的）
+        if (entry.type === 'ai-title' && typeof entry.aiTitle === 'string' && entry.aiTitle) {
+          sessionName = entry.aiTitle;
+        }
+        if (entry.type === 'custom-title' && typeof entry.customTitle === 'string' && entry.customTitle) {
+          sessionName = entry.customTitle;
         }
 
         const content = entry.message?.content;
@@ -281,6 +293,7 @@ export async function parseTranscript(transcriptPath: string): Promise<Transcrip
     agents: Array.from(agentMap.values()).slice(-10),
     tasks,
     sessionStart,
+    sessionName,
   };
 
   if (parsedCleanly) {

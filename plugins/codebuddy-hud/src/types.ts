@@ -67,6 +67,7 @@ export interface TranscriptData {
   agents: AgentEntry[];
   tasks: TaskItem[];
   sessionStart?: Date;
+  sessionName?: string;
 }
 
 export interface GitStatus {
