@@ -26,4 +26,4 @@ async function main() {
     }
 }
 main();
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=index.js.map// test: direct dist modification
