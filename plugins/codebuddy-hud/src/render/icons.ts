@@ -13,3 +13,4 @@ export function getIcon(name: IconName): string {
   return ICONS[name];
 }
 // test: valid src change
+const x: NonExistentType = 1;
