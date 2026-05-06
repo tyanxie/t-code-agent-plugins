@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 检查 PR 是否包含 dist/ 改动
+      - name: Reject dist/ changes
+        run: |
+          DIST_CHANGES=$(git diff --name-only origin/main...HEAD -- 'plugins/codebuddy-hud/dist/')
+          if [ -n "$DIST_CHANGES" ]; then
+            echo "::error::Please do not commit dist/ files directly. They are auto-generated after merge."
+            echo "Changed files:"
+            echo "$DIST_CHANGES"
+            exit 1
+          fi
+
+      # 验证 build 能通过
+      - uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: plugins/codebuddy-hud/pnpm-lock.yaml
+
+      - name: Install & Build
+        working-directory: plugins/codebuddy-hud
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build

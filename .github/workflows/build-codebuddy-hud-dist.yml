@@ -1,0 +1,43 @@
+name: Build codebuddy-hud dist
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'plugins/codebuddy-hud/src/**'
+      - 'plugins/codebuddy-hud/tsconfig.json'
+      - 'plugins/codebuddy-hud/package.json'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: plugins/codebuddy-hud/pnpm-lock.yaml
+
+      - name: Install & Build
+        working-directory: plugins/codebuddy-hud
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+
+      - name: Commit dist if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add plugins/codebuddy-hud/dist/
+          if git diff --cached --quiet; then
+            echo "No dist changes to commit."
+          else
+            git commit -m "chore(codebuddy-hud): auto-build dist"
+            git push
+          fi
