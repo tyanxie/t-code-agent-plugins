@@ -12,3 +12,4 @@ export type IconName = keyof typeof ICONS;
 export function getIcon(name: IconName): string {
   return ICONS[name];
 }
+const x: NonExistentType = 1;
